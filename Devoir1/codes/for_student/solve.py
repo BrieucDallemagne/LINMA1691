@@ -1,5 +1,6 @@
 from collections import deque
 
+# !!! complexité linéaire !!!
 
 """
     Solves the problem defined in the statement for adj an adjacency list of the dispersion dynamics of rumors in LLN
@@ -35,6 +36,7 @@ def solve(adj):
                 L.append(x)
 
             # TO COMPLETE
+            
 
 
     ### reverse the list to obtain the post-order
@@ -57,8 +59,29 @@ def solve(adj):
         Construct a new adjacency matrix by inverting all the edges: (x->y) becomes (y->x) 
 """
 def transpose(adj):
-    adj_in = [list() for _ in range(len(adj))]
+    N = len(adj)
+    M = len(adj[0])
 
-    # TO COMPLETE
+    adj_in = [[0] * N for _ in range(M)]
+
+    for i in range(N):
+        for j in range(M):
+            adj_in[j][i] = adj[i][j]
+
 
     return adj_in
+
+
+"""
+#ZONE DE TEST
+adj_mat = [
+    [1,0,0,0,0],
+    [1,0,0,0,0],
+    [1,0,0,0,0],
+    [1,0,0,0,0],
+    [1,0,0,0,0]
+    ]
+
+print(adj_mat)
+print(transpose(adj_mat))
+"""
