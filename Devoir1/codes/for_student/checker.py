@@ -21,7 +21,6 @@ def load_graph(f_in):
     for i in range(E):
         x,y = load_num(f_in)
         adj[x-1].append(y-1)
-
     return adj
 
 """

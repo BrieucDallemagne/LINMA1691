@@ -73,5 +73,5 @@ def transpose(adj) :
     adj_T = [list() for _ in range(len(adj))]
     for i in range (len(adj)) :
         for j in range (len(adj[i])) :
-            adj_T[adj[i][j]].append(j)
+            adj_T[adj[i][j]].append(i)
     return adj_T
