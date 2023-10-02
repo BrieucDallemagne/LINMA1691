@@ -55,15 +55,36 @@ def solve(adj) :
                 q2.append(e)
         
     # TODO : Find the kap at the roots of the SCC
-    """
-    i = 0
-    while (i < len(SCC)) :
-        start = list[i]
-        for j in range (len(SCC)) :
-            if i==j : continue
-    """
+    new_adj = [list() for _ in range(len(SCC))]
+    for i in range(len(SCC)) :
+        for j in range(len(adj[SCC[i]])) :
+            if adj[SCC[i]][j] in SCC :
+                new_adj[i].append(SCC.index(adj[SCC[i]][j]))
+    
 
-    return len(SCC)
+    q3 = deque()
+    visited2 = [False]*len(new_adj)
+    sources = len(new_adj)
+    for i in range(len(new_adj)) :
+        if visited2[i] : continue
+        visited2[i] = True
+        q3.append(i)
+        while q3 :
+            x = q3.pop()
+            for e in new_adj[x] :
+                if visited2[e] : continue
+                visited2[e] = True
+                q3.append(e)
+                sources -= 1
+
+
+
+
+
+
+
+
+    return sources
 
 """
     Transpose the adjacency matrix
@@ -77,5 +98,5 @@ def transpose(adj) :
     return adj_T
 
 # zone de test
-adj = [[1,2],[2],[],[],[4]]
-print(transpose(adj))
+#adj = [[1,2],[2],[],[],[0]]
+#print(solve(adj))
