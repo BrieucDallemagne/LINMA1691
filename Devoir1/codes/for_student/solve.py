@@ -1,7 +1,5 @@
 from collections import deque
 
-# !!! complexité linéaire !!!
-
 """
     Solves the problem defined in the statement for adj an adjacency list of the dispersion dynamics of rumors in LLN
         adj is a list of length equal to the number of kots
@@ -10,78 +8,70 @@ from collections import deque
     You are free to change the code below and to not use the precompleted part. The code is based on the high-level description at https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
     You can also define other sub-functions or import other datastructures from the collections library
 """
-def solve(adj):
-    # adjacency of the graph and its transpose
-    adj_out = adj
-    adj_in = transpose(adj_out)
+def solve(adj) :
+    ### Initialization
+    N = len(adj) # number of nodes
+    visited = [False]*N # is a node already visited?
+    L = [] # list of node to process in the second step
+    q = deque() # queue of nodes to process with their associated status (i,False/True) i is the node index and True/False describes if we are appending the node to L or not when processing it
 
-    # number of nodes
-    N = len(adj_in)
-
-    # is a node already visited?
-    visited = [False]*N
-    # list of node to process in the second step
-    L = []
-    # queue of nodes to process with their associated status (i,False/True) i is the node index and True/False describes if we are appending the node to L or not when processing it
-    q = deque()
-
-    ### loop on every node and launch a visit of its descendants
-    for x in range(N):
-        q.append((x,False))
-
-        while q:
+    ### Step 1 : Depth-first search on adj
+    for u in range(N) :
+        if visited[u] : continue
+        visited[u] = True
+        q.append((u,False))
+        while q :
             x,to_append = q.pop()
 
             if to_append:
                 L.append(x)
+                continue
 
-            # TO COMPLETE
-            
-
+            q.append((x,True)) # When we will have process all the nodes linked to x, we can append x to L
+            for e in adj[x] : 
+                if not visited[e] :
+                    q.append((e,False))
+                    visited[e] = True
 
     ### reverse the list to obtain the post-order
     L.reverse()
+    adj_T = transpose(adj) # transpose of adj
 
+    ### Step 2 : Depth-first search on adj_T : find the strongly connected components
+    assigned = [False]*N # is a node already visited?
+    SCC = list() # List of the roots of the strongly connected components
+    q = deque()
 
-    ### find the strongly connected components
-    
-    # TO COMPLETE
+    for u in L :
+        if assigned[u] : continue
+        else : SCC.append(u)
+        assigned[u] = True
+        q.append(u)
+        while q :
+            x = q.pop()
+            for e in adj_T[x] :
+                if assigned[e] : continue
+                assigned[e] = True
+                q.append(e)
+        
+    # TODO : Find the kap at the roots of the SCC
+    """
+    i = 0
+    while (i < len(SCC)) :
+        start = list[i]
+        for j in range (len(SCC)) :
+            if i==j : continue
+    """
 
-
-    ### compute answer
-    ans = 0
-    # TO COMPLETE
-
-    return ans
+    return len(SCC)
 
 """
     Transpose the adjacency matrix
-        Construct a new adjacency matrix by inverting all the edges: (x->y) becomes (y->x) 
+        Construct a new adjacency matrix by inverting all the edges: (x->y) becomes (y->x)
 """
-def transpose(adj):
-    N = len(adj)
-    M = len(adj[0])
-
-    adj_in = [[0] * N for _ in range(M)]
-
-    for i in range(N):
-        for j in range(M):
-            adj_in[j][i] = adj[i][j]
-
-
-    return adj_in
-
-
-"""
-#ZONE DE TEST
-adj_mat = [
-    [1,0,0,0,0],
-    [1,0,0,0,0],
-    [1,0,0,0,0],
-    [1,0,0,0,0],
-    [1,0,0,0,0]
-    ]
-
-print(adj_mat)
-print(transpose(adj_mat))
-"""
+def transpose(adj) :
+    adj_T = [list() for _ in range(len(adj))]
+    for i in range (len(adj)) :
+        for j in range (len(adj[i])) :
+            adj_T[adj[i][j]].append(j)
+    return adj_T
