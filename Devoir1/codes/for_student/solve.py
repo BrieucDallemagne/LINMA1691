@@ -37,7 +37,7 @@ def solve(adj) :
     L.reverse()
     adj_T = transpose(adj) # transpose of adj
 
-    ### Step 2 : Depth-first search on adj_T : find the strongly connected components
+    ### Depth-first search on adj_T : find the strongly connected components
     assigned = [False]*N # is a node already visited?
     SCC = list() # List of the roots of the strongly connected components
     q2 = deque()
@@ -54,14 +54,14 @@ def solve(adj) :
                 assigned[e] = True
                 q2.append(e)
         
-    # TODO : Find the kap at the roots of the SCC
+    # Find the kap at the roots of the SCC
     new_adj = [list() for _ in range(len(SCC))]
     for i in range(len(SCC)) :
         for j in range(len(adj[SCC[i]])) :
             if adj[SCC[i]][j] in SCC :
                 new_adj[i].append(SCC.index(adj[SCC[i]][j]))
     
-
+    # Find the sources of the SCC
     q3 = deque()
     visited2 = [False]*len(new_adj)
     sources = len(new_adj)
@@ -77,13 +77,6 @@ def solve(adj) :
                 q3.append(e)
                 sources -= 1
 
-
-
-
-
-
-
-
     return sources
 
 """
@@ -96,7 +89,3 @@ def transpose(adj) :
         for j in range (len(adj[i])) :
             adj_T[adj[i][j]].append(i)
     return adj_T
-
-# zone de test
-#adj = [[1,2],[2],[],[],[0]]
-#print(solve(adj))
