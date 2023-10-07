@@ -13,71 +13,58 @@ def solve(adj) :
     N = len(adj) # number of nodes
     visited = [False]*N # is a node already visited?
     L = [] # list of node to process in the second step
-    q1 = deque() # queue of nodes to process with their associated status (i,False/True) i is the node index and True/False describes if we are appending the node to L or not when processing it
+    q = deque() # queue of nodes to process with their associated status (i,False/True) i is the node index and True/False describes if we are appending the node to L or not when processing it
 
     ### Step 1 : Depth-first search on adj
     for u in range(N) :
         if visited[u] : continue
         visited[u] = True
-        q1.append((u,False))
-        while q1 :
-            x,to_append = q1.pop()
+        q.append((u,False))
+        while q :
+            x,to_append = q.pop()
 
             if to_append:
                 L.append(x)
                 continue
 
-            q1.append((x,True)) # When we will have process all the nodes linked to x, we can append x to L
+            q.append((x,True)) # When we will have processed all the nodes linked to x, we can append x to L
             for e in adj[x] : 
                 if not visited[e] :
-                    q1.append((e,False))
+                    q.append((e,False))
                     visited[e] = True
 
     ### reverse the list to obtain the post-order
     L.reverse()
     adj_T = transpose(adj) # transpose of adj
 
-    ### Depth-first search on adj_T : find the strongly connected components
-    assigned = [False]*N # is a node already visited?
-    SCC = list() # List of the roots of the strongly connected components
-    q2 = deque()
-
+    ### Step 2 : Depth-first search on adj_T : find the strongly connected components
+    assigned = dict() # is a node already visited?
+    SCC = dict() # List of the roots of the strongly connected components
+    q = deque()
     for u in L :
-        if assigned[u] : continue
-        else : SCC.append(u)
-        assigned[u] = True
-        q2.append(u)
-        while q2 :
-            x = q2.pop()
+        if u in assigned : continue
+        else : SCC[u] = True # We set True for the moment and we will later set it to False if we can access this root from another root
+        assigned[u] = u # Associate the node u to his root u
+        q.append(u)
+        while q :
+            x = q.pop()
             for e in adj_T[x] :
-                if assigned[e] : continue
-                assigned[e] = True
-                q2.append(e)
+                if e in assigned : continue
+                assigned[e] = u # Associate the node e to his root u
+                q.append(e)
         
-    # Find the kap at the roots of the SCC
-    new_adj = [list() for _ in range(len(SCC))]
-    for i in range(len(SCC)) :
-        for j in range(len(adj[SCC[i]])) :
-            if adj[SCC[i]][j] in SCC :
-                new_adj[i].append(SCC.index(adj[SCC[i]][j]))
-    
-    # Find the sources of the SCC
-    q3 = deque()
-    visited2 = [False]*len(new_adj)
-    sources = len(new_adj)
-    for i in range(len(new_adj)) :
-        if visited2[i] : continue
-        visited2[i] = True
-        q3.append(i)
-        while q3 :
-            x = q3.pop()
-            for e in new_adj[x] :
-                if visited2[e] : continue
-                visited2[e] = True
-                q3.append(e)
-                sources -= 1
+    # Find the kap at the roots of the SC
+    # 1. Go through all the edges of the graph and set the roots to which we can access from another root to False
+    for i in range (N) :
+        for e in adj[i] :
+            if (assigned[i] != assigned[e]) :
+                SCC[assigned[e]] = False
+    # 2. Count the number of roots to which we can't access from another root.
+    result = 0
+    for value in SCC.values() :
+        if value : result += 1
 
-    return sources
+    return result
 
 """
     Transpose the adjacency matrix
