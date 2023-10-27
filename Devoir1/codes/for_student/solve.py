@@ -64,6 +64,7 @@ def solve(adj) :
     for value in SCC.values() :
         if value : result += 1
 
+
     return result
 
 """
