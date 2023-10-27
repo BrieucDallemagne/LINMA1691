@@ -19,8 +19,30 @@ def prim_mst(N, roads):
     """
 
     satisfaction = 0
+    sum_satisfaction = 0
+
+    dict_adj = {}
+    for i in range(N):
+        dict_adj[i] = []
+
+    for i,j,k in roads:
+        dict_adj[i].append((j,k))
+        dict_adj[j].append((i,k))
+        sum_satisfaction += k
     
-    # TO COMPLETE
+    visited = [False]*N
+    heap = []
+    heapq.heappush(heap,(0,0))
+    while heap:
+        s, u = heapq.heappop(heap)
+        if not visited[u]:
+            visited[u] = True
+            satisfaction += s
+            for v, s in dict_adj[u]:
+                if not visited[v]:
+                    heapq.heappush(heap,(s,v))
+                    
+    satisfaction = sum_satisfaction - satisfaction
 
     return satisfaction
 
