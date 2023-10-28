@@ -91,7 +91,6 @@ def min_cut(N, edges) :
             if (union_find.find(u) != union_find.find(v)) :
                 union_find.union(u,v)
                 nodes -= 1
-        
         this_min_cut = 0
         while (len(edges) > 0) :
             u,v = edges[0]
@@ -102,9 +101,8 @@ def min_cut(N, edges) :
     alpha = 0.0001
     p = 1/math.comb(N, 2)
     k = math.ceil(math.log(alpha, 1-p))
-    best_min_cut = 0
-    for _ in range (k) : best_min_cut += karger(N,edges = edges)
-    best_min_cut = round(best_min_cut/k)
+    best_min_cut = karger(N,edges)
+    for _ in range (k) : best_min_cut = min(best_min_cut, karger(N,edges))
 
     return best_min_cut
 
