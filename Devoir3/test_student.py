@@ -66,4 +66,8 @@ def test_eulerian_path_finder():
     graph = load_graph("test_09.txt")
     print(pf.eulerian_path_finder(graph))
 
+def test_one_graph(file):
+    graph = load_graph(file)
+    print(pf.eulerian_path_finder(graph))
+
 test_eulerian_path_finder()
