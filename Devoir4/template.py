@@ -30,12 +30,33 @@ def get_residual(graph):
 
 def min_cost_max_flow(s, t, graph_residual):
 
-    # TODO
-
     def BellmanFord():
-        return False
+    
+        dist = [float('inf')] * len(graph_residual)
+        dist[s] = 0
+        parents = [None] * len(graph_residual)
+        Q = deque()
+        Q.append(s)
+        while Q:
+            u = Q.pop()
+            for edge in graph_residual[u]:
+                if edge.capa > 0 and dist[edge.v] > dist[u] + edge.weight:
+                    dist[edge.v] = dist[u] + edge.weight
+                    parents[edge.v] = edge
+                    if edge.v not in Q:
+                        Q.append(edge.v)
+
+        return dist, parents
+    
+    
+
+    
+
+    
+
 
     maximum_flow = 0
     minimum_cost = 0
 
     return maximum_flow, minimum_cost
+
